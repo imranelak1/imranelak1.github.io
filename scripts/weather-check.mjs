@@ -23,6 +23,8 @@ try {
     await page.screenshot({path:`.impeccable/review/weather-${size.name}-portfolio.png`,fullPage:true});
     await page.getByRole('button',{name:'Centre campus',exact:true}).click();
     await page.waitForSelector('.map-experience[data-weather="rain"]',{state:'attached'});
+    assert.equal(await page.getByRole('dialog').count(),0,'Location weather changes behind the portfolio');
+    await page.getByRole('button',{name:'Explore the map',exact:true}).click();
     assert.match(await page.locator('.place-weather').innerText(),/23°C · Rain/);
     assert(requests.some(url=>url.searchParams.get('latitude')==='31.653786654689917'));
     assert.equal(await page.getByRole('button',{name:'Satellite',exact:true}).getAttribute('aria-pressed'),'true');
@@ -37,8 +39,8 @@ try {
     await page.getByRole('combobox',{name:'Atmosphere'}).selectOption('auto');
     assert.match(await page.locator('.place-weather').innerText(),/23°C · Rain/);
     await page.keyboard.press('Escape');
-    await page.waitForFunction(()=>document.activeElement?.textContent?.trim()==='Centre campus');
-    assert.equal(await page.getByRole('button',{name:'Centre campus',exact:true}).evaluate(e=>e===document.activeElement),true);
+    await page.waitForFunction(()=>document.activeElement?.textContent?.trim()==='Explore the map');
+    assert.equal(await page.getByRole('button',{name:'Explore the map',exact:true}).evaluate(e=>e===document.activeElement),true);
     assert.deepEqual(errors,[]);
     await context.close();
     console.log(`${size.name}: color default, location weather, atmosphere previews, reduced motion, layout and focus passed`);

@@ -130,6 +130,7 @@ export default function MapExperience({
         <div className="weather-precipitation" />
       </div>
       <div className="map-shade" />
+      <p className="map-location-announcement" role="status">Background map: {place.name}{place.precision === 'area' ? ' (approximate area)' : ''}.</p>
       {exploring ? (
         <div
           className="map-interface"

@@ -22,11 +22,11 @@ Use Node.js 22 or newer. `npm run build` checks TypeScript and generates `dist/`
 - `src/styles.css`, `src/layout.css`, `src/map.css`: layout and map styling.
 - `src/starwars/`: Vader portrait, typography and interactive cursor.
 
-Add `public/cv.pdf` to enable the CV download. Both EMSI campuses use sourced coordinates. Sensthings locations are labeled as approximate areas until exact office pins are available.
+Add `public/cv.pdf` to enable the CV download. Location buttons move the background map and its weather without hiding the portfolio. The selected button is underlined; Explore the map opens the full controls at the current location. Both EMSI campuses use sourced coordinates. Sensthings locations are labeled as approximate areas until exact office pins are available.
 
 The cursor changes into a red targeting lock over links, buttons and project disclosures, then compresses on press. Keyboard, touch, editable fields and map exploration retain native behavior. Vader follows the pointer with eased, bounded head turns. Motion controls and reduced-motion preferences pause the portrait and map; hidden and offscreen rendering stops automatically.
 
-On phones, the profile places Vader beside the contact links, text is larger, and primary touch controls have at least 44px tap targets. Map tools adapt to portrait and landscape, with a horizontally scrolling location list and scrollable details. Safe-area spacing accounts for notches and home indicators. Touch devices start with ambient motion paused; visitors can enable it. The portrait renders at a lower pixel density and at most 30fps on touch devices. Cesium loads after the profile's first paint, uses sharper imagery while exploring, and stops the orbit loop while paused.
+On phones, the profile places Vader beside the contact links, text is larger, and primary touch controls have at least 44px tap targets. Map tools adapt to portrait and landscape, with a horizontally scrolling location list and scrollable details. Safe-area spacing accounts for notches and home indicators. Ambient motion starts on for desktop and touch devices, except when the visitor requests reduced motion. The Motion control can pause it. The portrait renders at a lower pixel density and at most 30fps on touch devices. Cesium loads after the profile's first paint, uses sharper imagery while exploring, and stops the orbit loop while paused.
 
 ## Deploy
 

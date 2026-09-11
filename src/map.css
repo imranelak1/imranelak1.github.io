@@ -167,6 +167,23 @@
 .project-links button:hover {
   color: #fff;
 }
+.entry-map-links button[aria-pressed="true"],
+.project-links button[aria-pressed="true"] {
+  color: #fff;
+  text-decoration: underline;
+  text-decoration-color: #ff6176;
+  text-underline-offset: 5px;
+}
+.map-location-announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
 .entry-map-links svg,
 .project-links button svg {
   width: 11px;

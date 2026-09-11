@@ -24,14 +24,27 @@ try {
   const summary=page.locator('.project>summary').first(); await summary.focus(); await page.keyboard.press('Enter');
   assert.equal(await page.locator('.project').first().getAttribute('open'),'');
   await page.getByRole('button',{name:'View location',exact:true}).click();
-  const dialog=page.getByRole('dialog'); await dialog.waitFor();
+  const dialog=page.getByRole('dialog'); assert.equal(await dialog.count(),0);
   await page.waitForSelector('.globe-canvas[data-target="monstergarage"]',{state:'attached'});
+  assert.equal(await page.locator('.portfolio').getAttribute('inert'),null);
+  assert.equal(await page.getByRole('button',{name:'View location',exact:true}).getAttribute('aria-pressed'),'true');
+  await page.screenshot({path:`.impeccable/review/background-location-${size.name}.png`});
+  await page.getByRole('button',{name:'Explore the map',exact:true}).click(); await dialog.waitFor();
   assert.match(await dialog.getByRole('link',{name:'Open in Google Maps'}).getAttribute('href'),/31.6669637/);
   await page.keyboard.press('Escape'); await dialog.waitFor({state:'detached'});
-  await page.waitForFunction(()=>document.activeElement?.matches('button') && document.activeElement.textContent?.trim()==='View location');
-  assert.equal(await page.getByRole('button',{name:'View location',exact:true}).evaluate(e=>e===document.activeElement),true);
+  await page.waitForFunction(()=>document.activeElement?.textContent?.trim()==='Explore the map');
+  assert.equal(await page.getByRole('button',{name:'Explore the map',exact:true}).evaluate(e=>e===document.activeElement),true);
   await page.getByRole('button',{name:'Centre campus',exact:true}).click();
   await page.waitForSelector('.globe-canvas[data-target="emsi-centre"]',{state:'attached'});
+  assert.equal(await dialog.count(),0);
+  for (const [selector,target] of [['#education button:nth-child(2)','emsi-gueliz'],['.experience-locations button:nth-child(1)','sensthings-skhirat'],['.experience-locations button:nth-child(2)','sensthings-benguerir'],['#education button:nth-child(1)','emsi-centre']]) {
+    await page.locator(selector).click();
+    await page.locator(`.globe-canvas[data-target="${target}"]`).waitFor({state:'attached'});
+    assert.equal(await dialog.count(),0);
+    assert.equal(await page.locator(selector).getAttribute('aria-pressed'),'true');
+    assert.equal(await page.locator('.portfolio').getAttribute('inert'),null);
+  }
+  await page.getByRole('button',{name:'Explore the map',exact:true}).click(); await dialog.waitFor();
   assert.match(await dialog.getByRole('link',{name:'Open in Google Maps'}).getAttribute('href'),/31.653786654689917/);
   await page.waitForTimeout(1200);
   await page.screenshot({path:`.impeccable/review/restored-${size.name}-map.png`});
@@ -55,6 +68,7 @@ try {
  await page.goto(base); await page.getByText('Map unavailable — your portfolio is still here.',{exact:true}).waitFor();
  assert.equal(await page.locator('.cesium-widget-errorPanel').count(),0);
  await page.getByRole('button',{name:'Centre campus',exact:true}).click();
+ await page.getByRole('button',{name:'Explore the map',exact:true}).click();
  assert.equal(await page.getByRole('link',{name:'Open in Google Maps'}).isVisible(),true);
  await page.keyboard.press('Escape');
  await page.evaluate(()=>scrollTo(0,0));

@@ -22,8 +22,8 @@ try {
     await page.locator('.globe-canvas[data-target=marrakech]').waitFor({ state: 'attached', timeout: 60000 });
     await page.evaluate(() => document.fonts.ready);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
-    assert.equal(await page.locator('.vader-portrait').getAttribute('data-running'), 'false');
-    assert.equal(await page.locator('.globe-canvas').getAttribute('data-orbiting'), 'false');
+    assert.equal(await page.locator('.map-experience').getAttribute('data-paused'), 'false');
+    assert.equal(await page.locator('.globe-canvas').getAttribute('data-orbiting'), 'true');
     assert.equal(await page.locator('.imperial-cursor').getAttribute('data-visible'), 'false');
     const actions = page.locator('.sidebar nav a,.contact-buttons a,.socials a,.motion-control,.entry-map-links button,.email-line button,.map-peek button');
     for (const action of await actions.all()) assert((await action.boundingBox()).height >= 44, `Tap target: ${await action.textContent()}`);
@@ -38,9 +38,18 @@ try {
     await page.locator('.project > summary').first().tap();
     assert.equal(await page.locator('.project').first().getAttribute('open'), '');
     await page.getByRole('button', { name: 'View location', exact: true }).tap();
-    await page.getByRole('dialog').waitFor();
+    assert.equal(await page.getByRole('dialog').count(), 0);
     await page.locator('.globe-canvas[data-target=monstergarage]').waitFor({ state: 'attached' });
+    assert.equal(await page.locator('.portfolio').getAttribute('inert'), null);
+    assert.equal(await page.getByRole('button', { name: 'View location', exact: true }).getAttribute('aria-pressed'), 'true');
+    await page.getByRole('button', { name: 'Explore the map', exact: true }).tap();
+    await page.getByRole('dialog').waitFor();
     const nav = page.getByRole('navigation', { name: 'Map locations' });
+    await page.waitForFunction(() => {
+      const nav = document.querySelector('.places-panel nav').getBoundingClientRect();
+      const active = document.querySelector('.places-panel [aria-pressed=true]').getBoundingClientRect();
+      return active.left >= nav.left && active.right <= nav.right + 1;
+    });
     const selected = nav.locator('[aria-pressed=true]');
     const navBox = await nav.boundingBox(), selectedBox = await selected.boundingBox();
     assert(selectedBox.x >= navBox.x && selectedBox.x + selectedBox.width <= navBox.x + navBox.width + 1, 'Selected destination is scrolled into view');
@@ -59,6 +68,8 @@ try {
     await page.getByRole('button', { name: /Back to portfolio/ }).tap();
     assert.equal(await page.getByRole('dialog').count(), 0);
     if (size.name === 'phone') {
+      await page.getByRole('button', { name: 'Pause background animation' }).tap();
+      assert.equal(await page.locator('.globe-canvas').getAttribute('data-orbiting'), 'false');
       await page.getByRole('button', { name: 'Play background animation' }).tap();
       await page.waitForFunction(() => document.querySelector('.vader-portrait').dataset.running === 'true');
       assert.equal(await page.locator('.globe-canvas').getAttribute('data-orbiting'), 'true');
@@ -74,6 +85,6 @@ try {
     }
     assert.deepEqual(errors, []);
     await context.close();
-    console.log(`${size.name}: touch targets, compact profile, battery defaults, map controls, location links and no overflow passed`);
+    console.log(`${size.name}: ambient default, background location selection, touch controls, motion limits and no overflow passed`);
   }
 } finally { await browser.close(); }
