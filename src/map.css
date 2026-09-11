@@ -394,6 +394,7 @@
   color: #c0c8ce;
   text-shadow: 0 1px 3px #000;
 }
+.map-help__touch { display: none; }
 .map-status,
 .map-help,
 .place-detail,

@@ -33,7 +33,8 @@ export default function VaderPortrait({ paused }: { paused: boolean }) {
     let renderer: THREE.WebGLRenderer;
     try { renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'low-power' }); }
     catch { element.dataset.ready = 'failed'; return; }
-    renderer.setPixelRatio(Math.min(Math.max(devicePixelRatio, 1.5), 2));
+    const coarsePointer = matchMedia('(pointer: coarse)').matches;
+    renderer.setPixelRatio(Math.min(devicePixelRatio, coarsePointer ? 1.5 : 2));
     renderer.setClearColor(0x000000, 0);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = .9;
@@ -64,6 +65,7 @@ export default function VaderPortrait({ paused }: { paused: boolean }) {
     const tick = (now: number) => {
       frame = 0;
       if (!model || disposed || failed || !visible || document.hidden || state.current.paused) return;
+      if (coarsePointer && last && now - last < 1000 / 30) { frame = requestAnimationFrame(tick); return; }
       const dt = last ? Math.min((now - last) / 1000, .05) : 0;
       last = now; elapsed += dt;
       const angle = pointerActive ? pointerX : Math.sin(elapsed * .3) * .06;

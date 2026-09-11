@@ -18,7 +18,7 @@ export default function App() {
   const [selectedPlace, setSelectedPlace] = useState("marrakech");
   const openPlace = useCallback((id: string) => { mapTrigger.current = document.activeElement as HTMLElement; setSelectedPlace(id); setExploring(true); }, []);
   const exploreMap = useCallback((open: boolean) => { if (open) mapTrigger.current = document.activeElement as HTMLElement; setExploring(open); }, []);
-  const [paused, setPaused] = useState(() => matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const [paused, setPaused] = useState(() => matchMedia("(prefers-reduced-motion: reduce), (hover: none) and (pointer: coarse)").matches);
   const [cv, setCv] = useState(false);
   const [copied, setCopied] = useState(false);
   const [copyError, setCopyError] = useState(false);

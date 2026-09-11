@@ -37,6 +37,7 @@ try {
     await page.getByRole('combobox',{name:'Atmosphere'}).selectOption('auto');
     assert.match(await page.locator('.place-weather').innerText(),/23°C · Rain/);
     await page.keyboard.press('Escape');
+    await page.waitForFunction(()=>document.activeElement?.textContent?.trim()==='Centre campus');
     assert.equal(await page.getByRole('button',{name:'Centre campus',exact:true}).evaluate(e=>e===document.activeElement),true);
     assert.deepEqual(errors,[]);
     await context.close();

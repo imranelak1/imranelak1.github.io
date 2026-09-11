@@ -41,6 +41,8 @@ export default function Globe(props: Props) {
   latest.current = props;
   const [ready, setReady] = useState(false);
   const initialFlight = useRef(false);
+  const syncOrbit = useRef(() => {});
+  useEffect(() => syncOrbit.current(), [props.paused, props.exploring, ready]);
   useEffect(() => {
     if (!host.current) return;
     const container = host.current;
@@ -70,7 +72,7 @@ export default function Globe(props: Props) {
         requestRenderMode: true,
         maximumRenderTimeChange: Infinity,
         contextOptions: {
-          webgl: { alpha: false, preserveDrawingBuffer: true },
+          webgl: { alpha: false, preserveDrawingBuffer: false },
         },
       });
     } catch {
@@ -81,8 +83,9 @@ export default function Globe(props: Props) {
       return;
     }
     viewer.current = map;
-    map.resolutionScale = Math.min(devicePixelRatio, 1.25) / devicePixelRatio;
-    map.targetFrameRate = 30;
+    map.useBrowserRecommendedResolution = true;
+    map.resolutionScale = matchMedia('(pointer: coarse)').matches ? .8 : 1.25;
+    map.targetFrameRate = matchMedia('(pointer: coarse)').matches ? 24 : 30;
     map.scene.backgroundColor = Color.fromCssColorString("#0a0a0a");
     map.scene.globe.baseColor = Color.fromCssColorString("#242424");
     map.scene.globe.maximumScreenSpaceError = 3;
@@ -186,16 +189,21 @@ export default function Globe(props: Props) {
       event.preventDefault();
       contextFailed = true;
       map.useDefaultRenderLoop = false;
+      syncOrbit.current();
       latest.current.onStatus("Map unavailable — reload to retry.");
     };
     map.scene.canvas.addEventListener("webglcontextlost", onLost);
     const onVisibility = () => {
       map.useDefaultRenderLoop = !document.hidden && !contextFailed;
+      syncOrbit.current();
       if (!document.hidden) map.scene.requestRender();
     };
     document.addEventListener("visibilitychange", onVisibility);
     let last = performance.now();
+    const canOrbit = () => !contextFailed && !document.hidden && !latest.current.exploring && !latest.current.paused;
     const orbit = (now: number) => {
+      frame = 0;
+      if (!canOrbit()) return;
       frame = requestAnimationFrame(orbit);
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
@@ -221,11 +229,18 @@ export default function Globe(props: Props) {
       map.camera.lookAtTransform(Matrix4.IDENTITY);
       map.scene.requestRender();
     };
-    frame = requestAnimationFrame(orbit);
+    syncOrbit.current = () => {
+      cancelAnimationFrame(frame); frame = 0;
+      container.dataset.orbiting = String(canOrbit());
+      last = performance.now();
+      if (canOrbit()) frame = requestAnimationFrame(orbit);
+    };
+    syncOrbit.current();
     return () => {
       disposed = true;
       clearTimeout(timeout);
       cancelAnimationFrame(frame);
+      syncOrbit.current = () => {};
       removeError?.();
       handler?.destroy();
       document.removeEventListener("visibilitychange", onVisibility);
@@ -269,6 +284,9 @@ export default function Globe(props: Props) {
     const map = viewer.current;
     if (!map) return;
     map.scene.screenSpaceCameraController.enableInputs = props.exploring;
+    const coarse = matchMedia('(pointer: coarse)').matches;
+    map.resolutionScale = coarse ? (props.exploring ? 1.25 : .8) : 1.25;
+    map.targetFrameRate = coarse && !props.exploring ? 24 : 30;
     map.entities.values.forEach((entity) => {
       if (entity.label)
         entity.label.show = new ConstantProperty(props.exploring);

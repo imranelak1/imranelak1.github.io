@@ -34,6 +34,17 @@ export default function MapExperience({
 }: Props) {
   const [style, setStyle] = useState<"noir" | "satellite">("satellite");
   const [preview, setPreview] = useState("auto");
+  const [loadMap, setLoadMap] = useState(() => !matchMedia('(hover: none) and (pointer: coarse)').matches);
+  useEffect(() => {
+    if (loadMap) return;
+    let idle = 0, timer = 0, frame = 0;
+    // Give the profile and its controls a first paint before importing Cesium.
+    frame = requestAnimationFrame(() => { frame = requestAnimationFrame(() => {
+      if (typeof window.requestIdleCallback === 'function') idle = window.requestIdleCallback(() => setLoadMap(true), { timeout: 1200 });
+      else timer = window.setTimeout(() => setLoadMap(true), 150);
+    }); });
+    return () => { cancelAnimationFrame(frame); if (idle) window.cancelIdleCallback(idle); clearTimeout(timer); };
+  }, [loadMap]);
   const [status, setStatus] = useState("Loading map…");
   const [command, setCommand] = useState<{
     type: "in" | "out" | "reset";
@@ -41,6 +52,15 @@ export default function MapExperience({
   }>({ type: "reset", tick: 0 });
   const panel = useRef<HTMLDivElement>(null);
   const back = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!exploring) return;
+    const nav = panel.current?.querySelector<HTMLElement>('.places-panel nav');
+    const active = nav?.querySelector<HTMLElement>('[aria-pressed="true"]');
+    if (nav && active && nav.scrollWidth > nav.clientWidth) {
+      nav.scrollTo({ left: nav.scrollLeft + active.getBoundingClientRect().left - nav.getBoundingClientRect().left - 16, behavior: paused ? 'auto' : 'smooth' });
+    }
+    panel.current?.querySelector('.place-detail')?.scrollTo(0, 0);
+  }, [selected, exploring]);
   const place = findPlace(selected);
   const weather = useMapWeather(place.latitude, place.longitude);
   const phase: DayPhase = preview === "auto" ? weather.phase : preview === "rain" ? "day" : preview as DayPhase;
@@ -92,7 +112,7 @@ export default function MapExperience({
     <div className={`map-experience ${exploring ? "is-exploring" : ""}`} data-phase={phase} data-weather={kind} data-paused={paused}>
       <div className={`map-background ${style}`}>
         <Suspense fallback={null}>
-          <Globe
+          {(loadMap || exploring) && <Globe
             placeId={selected}
             exploring={exploring}
             paused={paused}
@@ -102,7 +122,7 @@ export default function MapExperience({
             onSelect={onSelect}
             onStatus={setStatus}
             command={command}
-          />
+          />}
         </Suspense>
       </div>
       <div className="map-atmosphere" aria-hidden="true">
@@ -214,7 +234,8 @@ export default function MapExperience({
             </span>
           </section>
           <div className="map-help">
-            Drag to pan · Scroll to zoom · Ctrl + drag to tilt
+            <span className="map-help__desktop">Drag to pan · Scroll to zoom · Ctrl + drag to tilt</span>
+            <span className="map-help__touch">Drag to pan · Pinch to zoom</span>
           </div>
         </div>
       ) : createPortal(<div className="map-peek"><span><MapPin />{place.name}</span><button onClick={() => onExplore(true)}><Globe2 />Explore the map<ArrowUpRight /></button></div>, document.body)}

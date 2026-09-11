@@ -26,6 +26,8 @@ Add `public/cv.pdf` to enable the CV download. Both EMSI campuses use sourced co
 
 The cursor changes into a red targeting lock over links, buttons and project disclosures, then compresses on press. Keyboard, touch, editable fields and map exploration retain native behavior. Vader follows the pointer with eased, bounded head turns. Motion controls and reduced-motion preferences pause the portrait and map; hidden and offscreen rendering stops automatically.
 
+On phones, the profile places Vader beside the contact links, text is larger, and primary touch controls have at least 44px tap targets. Map tools adapt to portrait and landscape, with a horizontally scrolling location list and scrollable details. Safe-area spacing accounts for notches and home indicators. Touch devices start with ambient motion paused; visitors can enable it. The portrait renders at a lower pixel density and at most 30fps on touch devices. Cesium loads after the profile's first paint, uses sharper imagery while exploring, and stops the orbit loop while paused.
+
 ## Deploy
 
 Push to `main` to publish through [GitHub Actions](.github/workflows/deploy.yml). The workflow installs the locked dependencies, builds the application and deploys the entire `dist/` directory, including Cesium workers and assets, to GitHub Pages. The repository's Pages source must be set to **GitHub Actions**.
@@ -39,6 +41,7 @@ With the dev server running and Microsoft Edge installed:
 ```sh
 npm run test:browser
 npm run test:3d
+npm run test:mobile
 npm run test:weather
 ```
 

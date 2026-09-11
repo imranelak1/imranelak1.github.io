@@ -4,6 +4,7 @@ import "./styles.css";
 import "./map.css";
 import "./layout.css";
 import "./starwars/starwars.css";
+import "./mobile.css";
 import App from "./App";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

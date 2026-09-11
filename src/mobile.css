@@ -1,0 +1,145 @@
+/* Comfortable touch controls, including tablets with a coarse pointer. */
+@media (pointer: coarse), (max-width: 640px) {
+  a, button, summary, select { -webkit-tap-highlight-color: #ffffff26; }
+  button, summary { touch-action: manipulation; }
+  .sidebar nav a, .socials a, .motion-control,
+  .contact-buttons > a, .cv-pending,
+  .project-links a, .project-links button, .entry-map-links button,
+  .email-line > a, .email-line button, .asset-credit-link {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .sidebar nav a { min-width: 44px; font-size: 11px; }
+  .contact-buttons > a, .cv-pending { padding: 8px 10px; font-size: 11px; }
+  .socials a, .motion-control, .project-links a,
+  .project-links button, .entry-map-links button { font-size: 12px; }
+  .motion-control, .email-line button { min-width: 44px; }
+  .project > summary { min-height: 44px; }
+  .project > summary:active .project-name, a:active, button:active { color: #fff; }
+  .map-peek > button, .map-topbar button, .map-tools button,
+  .map-tools select, .places-panel nav button, .place-links a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .map-tools > button, .map-topbar > button:last-child { justify-content: center; }
+  .map-tools select { font-size: 16px; }
+  .map-help__desktop, .map-topbar kbd { display: none; }
+  .map-help__touch { display: inline; }
+}
+
+@media (max-width: 640px) {
+  html { scroll-padding-top: 24px; }
+  .portfolio {
+    padding-top: calc(76px + env(safe-area-inset-top));
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  }
+  .sidebar { position: relative; top: auto; }
+  .name-link h1 { font-size: clamp(32px, 9vw, 38px); }
+  .role { font-size: 16px; line-height: 1.6; margin-top: 16px; }
+  .tagline { font-size: 14px; line-height: 1.65; margin-top: 14px; max-width: 36ch; }
+  .sidebar nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 12px; margin-top: 20px; }
+  .sidebar nav a { padding: 8px 0; width: fit-content; letter-spacing: .7px; }
+  .sidebar-bottom {
+    width: 100%;
+    min-width: 0;
+    min-height: 172px;
+    margin-top: 16px;
+    padding-top: 16px;
+    padding-right: clamp(100px, 29vw, 124px);
+  }
+  .contact-buttons { gap: 8px; flex-wrap: wrap; }
+  .socials { margin-top: 4px; gap: 0 12px; }
+  .socials > span { font-size: 10px; line-height: 1.6; }
+  .motion-control { margin-top: 4px; }
+  .vader-portrait {
+    position: absolute;
+    right: -8px;
+    bottom: 6px;
+    width: clamp(100px, 29vw, 124px);
+    height: 160px;
+    margin: 0;
+  }
+  main { padding-top: 28px; padding-bottom: 24px; }
+  .intro, .intro p { font-size: 14px; line-height: 1.75; }
+  .intro p + p { margin-top: 18px; }
+  main > section { margin-bottom: 44px; }
+  .section-label { font-size: 11px; margin-bottom: 24px; }
+  .entry-meta, .experience-locations > p { font-size: 11px; }
+  .entry h3, .interest h3, .project-name { font-size: 15px; }
+  .entry p, .interest p, .project-description, .project-details { font-size: 14px; line-height: 1.75; }
+  .project > summary { display: flex; flex-direction: column; gap: 5px; }
+  .project > summary > .entry-meta { order: 1; font-size: 10px; text-align: left; padding-top: 0; }
+  .project-summary { display: contents; }
+  .project-name { order: 0; }
+  .project-description { order: 2; margin-top: 3px; }
+  .project-links, .entry-map-links { gap: 4px 16px; }
+  .project-links > span { width: 100%; font-size: 10px; }
+  footer { font-size: 11px; line-height: 1.8; }
+  .email-line { gap: 6px; font-size: 12px; }
+  .email-line > a { overflow-wrap: anywhere; }
+  .asset-credit-link { font-size: 11px; }
+
+  .map-experience { height: 100dvh; }
+  .map-peek { position: absolute; top: calc(12px + env(safe-area-inset-top)); right: max(20px, env(safe-area-inset-right)); }
+  .map-peek > button { padding: 8px 12px; font-size: 11px; gap: 8px; }
+  .map-topbar { padding: calc(8px + env(safe-area-inset-top)) 16px 8px; gap: 8px; }
+  .map-topbar button { font-size: 12px; }
+  .places-panel { top: calc(68px + env(safe-area-inset-top)); }
+  .places-panel nav { overscroll-behavior-x: contain; scroll-padding-inline: 16px; }
+  .places-panel nav button { min-height: 60px; padding: 10px 16px; font-size: 12px; }
+  .places-panel nav button > span > span { font-size: 10px; }
+  .map-tools {
+    top: calc(140px + env(safe-area-inset-top));
+    left: 16px;
+    right: 16px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) repeat(3, 44px);
+    gap: 6px;
+    max-width: none;
+  }
+  .map-tools select { grid-column: 1 / -1; width: 100%; padding: 8px; font-size: 16px; }
+  .map-style { min-width: 0; }
+  .map-style button { flex: 1; padding: 8px 6px; font-size: 11px; }
+  .map-tools > button { padding: 10px; }
+  .map-tools > button svg { width: 16px; height: 16px; }
+  .place-detail {
+    bottom: calc(78px + env(safe-area-inset-bottom));
+    max-height: min(36dvh, calc(100dvh - 338px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));
+    padding: 16px;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  .place-detail > p { font-size: 13px; line-height: 1.65; }
+  .place-detail .place-weather, .place-detail .place-address { font-size: 12px; }
+  .place-detail .place-category, .pin-precision { font-size: 10px; }
+  .place-detail h2 { font-size: 20px; }
+  .place-weather a { font-size: 10px; min-height: 32px; display: inline-flex; align-items: center; }
+  .place-links { gap: 0 16px; }
+  .place-links a { font-size: 12px; }
+  .map-help { font-size: 10px; bottom: calc(51px + env(safe-area-inset-bottom)); }
+  .map-status { bottom: calc(30px + env(safe-area-inset-bottom)); font-size: 9px; }
+  .cesium-widget-credits {
+    bottom: calc(4px + env(safe-area-inset-bottom)) !important;
+    max-width: calc(100vw - 16px);
+  }
+  .cesium-credit-logoContainer img { max-width: 86px; max-height: 18px; width: auto; height: auto; }
+  .weather-precipitation { inset: -100px !important; }
+}
+
+/* A short landscape viewport needs side-by-side map controls. */
+@media (max-width: 960px) and (max-height: 500px) {
+  .map-topbar { padding: 4px max(16px, env(safe-area-inset-right)) 4px max(16px, env(safe-area-inset-left)); }
+  .map-topbar > span, .map-topbar kbd, .places-panel h2, .places-panel > p, .map-help { display: none; }
+  .places-panel { top: 56px; left: 0; right: 0; width: 100%; }
+  .places-panel nav { flex-direction: row; overflow-x: auto; }
+  .places-panel nav button { flex: 0 0 auto; min-height: 50px; padding: 7px 14px; }
+  .map-tools { top: 118px; left: max(16px, env(safe-area-inset-left)); right: auto; width: 270px; display: flex; justify-content: flex-start; gap: 6px; }
+  .map-tools select { width: 100%; font-size: 16px; }
+  .map-style button { padding: 8px; }
+  .map-tools > button { padding: 8px; }
+  .place-detail { top: 118px; bottom: calc(48px + env(safe-area-inset-bottom)); left: auto; right: max(16px, env(safe-area-inset-right)); width: 42%; max-height: none; overflow: auto; padding: 14px; }
+  .map-status { bottom: calc(28px + env(safe-area-inset-bottom)); }
+}

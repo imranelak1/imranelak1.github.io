@@ -9,6 +9,7 @@
     "preview": "vite preview --host 127.0.0.1",
     "test:browser": "node scripts/browser-check.mjs",
     "test:3d": "node scripts/vader-check.mjs",
+    "test:mobile": "node scripts/mobile-check.mjs",
     "test:weather": "node scripts/weather-check.mjs"
   },
   "dependencies": {
