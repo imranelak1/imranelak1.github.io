@@ -22,8 +22,8 @@ function disposeModel(root: THREE.Object3D) {
   });
 }
 
-export default function VaderPortrait({ paused }: { paused: boolean }) {
-  const host = useRef<HTMLDivElement>(null);
+export default function VaderPortrait({ paused, onSecret }: { paused: boolean; onSecret: () => void }) {
+  const host = useRef<HTMLButtonElement>(null);
   const state = useRef({ paused, sync: () => {} });
   state.current.paused = paused;
   useEffect(() => state.current.sync(), [paused]);
@@ -39,6 +39,7 @@ export default function VaderPortrait({ paused }: { paused: boolean }) {
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = .9;
     element.appendChild(renderer.domElement);
+    renderer.domElement.setAttribute('aria-hidden', 'true');
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(32, 1, .05, 100);
     camera.position.set(0, .1, 3.9); camera.lookAt(0, 0, 0);
@@ -139,5 +140,5 @@ export default function VaderPortrait({ paused }: { paused: boolean }) {
       disposeModel(scene); environment.dispose(); renderer.dispose(); renderer.domElement.remove();
     };
   }, []);
-  return <div ref={host} className="vader-portrait" data-ready="loading" aria-hidden="true" />;
+  return <button ref={host} type="button" className="vader-portrait" data-ready="loading" aria-label="Enter secret code" onClick={onSecret} />;
 }

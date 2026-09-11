@@ -42,6 +42,7 @@ With the dev server running and Microsoft Edge installed:
 npm run test:browser
 npm run test:3d
 npm run test:mobile
+npm run test:secret
 npm run test:weather
 ```
 

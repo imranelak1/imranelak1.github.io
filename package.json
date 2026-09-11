@@ -10,6 +10,7 @@
     "test:browser": "node scripts/browser-check.mjs",
     "test:3d": "node scripts/vader-check.mjs",
     "test:mobile": "node scripts/mobile-check.mjs",
+    "test:secret": "node scripts/secret-check.mjs",
     "test:weather": "node scripts/weather-check.mjs"
   },
   "dependencies": {

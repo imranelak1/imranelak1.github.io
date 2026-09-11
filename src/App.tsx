@@ -2,6 +2,7 @@ import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react"
 import { ArrowUpRight, Github, Mail, FileText, Pause, Play, Copy, Check, MapPin } from "lucide-react";
 import MapExperience from "./MapExperience";
 import ImperialCursor from './starwars/ImperialCursor';
+import SecretMessage, { type SecretMode } from './SecretMessage';
 const VaderPortrait = lazy(() => import('./starwars/VaderPortrait'));
 const email = "imranelakniti9@gmail.com";
 const github = "https://github.com/imranelak1";
@@ -15,6 +16,7 @@ export default function App() {
   const [active, setActive] = useState("about");
   const mapTrigger = useRef<HTMLElement | null>(null);
   const [exploring, setExploring] = useState(false);
+  const [secret, setSecret] = useState<SecretMode>('closed');
   const [selectedPlace, setSelectedPlace] = useState("marrakech");
   const showPlace = useCallback((id: string) => { setSelectedPlace(id); }, []);
   const exploreMap = useCallback((open: boolean) => { if (open) mapTrigger.current = document.activeElement as HTMLElement; setExploring(open); }, []);
@@ -41,8 +43,9 @@ export default function App() {
     catch { setCopyError(true); }
   }
   return <div>
-    <ImperialCursor disabled={exploring} />
-    <MapExperience selected={selectedPlace} exploring={exploring} paused={paused} onExplore={exploreMap} returnFocus={mapTrigger.current} onSelect={setSelectedPlace} onPause={() => setPaused(!paused)} />
+    <ImperialCursor disabled={exploring || secret !== 'closed'} />
+    <SecretMessage mode={secret} onChange={setSecret} disabled={exploring} />
+    <MapExperience selected={selectedPlace} exploring={exploring} paused={paused || secret !== 'closed'} onExplore={exploreMap} returnFocus={mapTrigger.current} onSelect={setSelectedPlace} onPause={() => setPaused(!paused)} />
     <a className="skip-link" href="#projects">Skip to projects</a>
     <div className={`portfolio ${exploring ? "map-is-open" : ""}`} inert={exploring}>
       <header className="sidebar">
@@ -57,7 +60,7 @@ export default function App() {
           <div className="socials"><a href={github} target="_blank" rel="noreferrer"><Github />GitHub <ArrowUpRight /></a><span>Marrakech, Morocco</span></div>
           <button className="motion-control" onClick={() => setPaused(!paused)} aria-label={paused ? "Play background animation" : "Pause background animation"}>{paused ? <Play /> : <Pause />}{paused ? "Motion off" : "Motion on"}</button>
         </div>
-        <Suspense fallback={<div className="vader-portrait" aria-hidden="true" />}><VaderPortrait paused={paused || exploring} /></Suspense>
+        <Suspense fallback={<div className="vader-portrait" aria-hidden="true" />}><VaderPortrait paused={paused || exploring || secret !== 'closed'} onSecret={() => setSecret('code')} /></Suspense>
       </header>
       <main>
         <section id="about" className="intro" aria-label="About">
