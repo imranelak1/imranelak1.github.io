@@ -1,0 +1,14 @@
+node_modules/
+dist/
+*.local
+.impeccable/
+archive/
+docs/
+DESIGN.md
+PRODUCT.md
+scripts/inspect-blendswap.py
+.env
+.env.*
+!.env.example
+test-results/
+*.tsbuildinfo

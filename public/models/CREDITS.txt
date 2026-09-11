@@ -1,0 +1,19 @@
+﻿Darth Vader Helmet
+==================
+Creator: JJTale
+https://sketchfab.com/JJTale
+Source: https://sketchfab.com/3d-models/darth-vader-helmet-7c49aaf5121643189a4ac40fdfd0a35b
+License: Creative Commons Attribution 4.0 (CC BY 4.0)
+https://creativecommons.org/licenses/by/4.0/
+Portfolio version: optimized mesh/textures, Meshopt GLB compression,
+normalized display scale, studio lighting and gentle pointer-responsive motion.
+Original creator, source and license remain embedded in the GLB metadata.
+
+Star Jedi typeface
+==================
+Creator: Boba Fonts / Davide Canavero (1998), as embedded in the original font.
+The original font package and author guide are retained in public/fonts/.
+Star Jedi is used for the portfolio name; body text retains its readable font.
+
+Star Wars characters and names belong to their respective owners.
+This portfolio is not affiliated with Lucasfilm or Disney.
