@@ -48,6 +48,8 @@ npm run test:weather
 
 Set `PORTFOLIO_TEST_URL` to check a production preview or the published site. Checks cover responsive layout, map destinations, keyboard navigation, project disclosures, cursor feedback, portrait tracking, motion preferences and failure states. Screenshots are written to `.impeccable/review/`.
 
+The Easter egg payload is encrypted; its code and message are absent from the current source and public tests. A short numeric code provides casual hiding only, not secure access control, and older commits may contain previous values. Checks generate independent test data. To change the payload, keep a JSON file with `code` and `message` in the ignored `.impeccable/` folder and run `node scripts/seal-secret.mjs <private-file>`. Never commit that input file. Set `PORTFOLIO_SECRET_FILE` to its local path when checking the real published payload.
+
 ## Credits
 
 The Darth Vader helmet is by [JJTale](https://sketchfab.com/JJTale), licensed under CC BY 4.0. Star Jedi is by Boba Fonts / Davide Canavero; its original package and guide are retained. See [asset credits](public/models/CREDITS.txt) for sources and adaptation details.
