@@ -21,6 +21,7 @@ type Props = {
   onExplore: (open: boolean) => void;
   onSelect: (id: string) => void;
   onPause: () => void;
+  onPerformanceLimited: () => void;
   returnFocus?: HTMLElement | null;
 };
 export default function MapExperience({
@@ -30,11 +31,12 @@ export default function MapExperience({
   onExplore,
   onSelect,
   onPause,
+  onPerformanceLimited,
   returnFocus,
 }: Props) {
   const [style, setStyle] = useState<"noir" | "satellite">("satellite");
   const [preview, setPreview] = useState("auto");
-  const [loadMap, setLoadMap] = useState(() => !matchMedia('(hover: none) and (pointer: coarse)').matches);
+  const [loadMap, setLoadMap] = useState(false);
   useEffect(() => {
     if (loadMap) return;
     let idle = 0, timer = 0, frame = 0;
@@ -121,6 +123,7 @@ export default function MapExperience({
             cloud={cloud}
             onSelect={onSelect}
             onStatus={setStatus}
+            onPerformanceLimited={onPerformanceLimited}
             command={command}
           />}
         </Suspense>

@@ -11,7 +11,8 @@
     "test:3d": "node scripts/vader-check.mjs",
     "test:mobile": "node scripts/mobile-check.mjs",
     "test:secret": "node scripts/secret-check.mjs",
-    "test:weather": "node scripts/weather-check.mjs"
+    "test:weather": "node scripts/weather-check.mjs",
+    "test:performance": "node scripts/performance-check.mjs"
   },
   "dependencies": {
     "cesium": "^1.145.0",

@@ -45,7 +45,7 @@
 [data-weather="storm"] .weather-precipitation {
   display: block;
   position: absolute;
-  inset: -100%;
+  inset: -55px -15px;
   opacity: 0.17;
   background-image: repeating-linear-gradient(105deg, transparent 0 88px, #c6ddec 89px 90px, transparent 91px 170px);
   background-size: 170px 55px;
@@ -55,7 +55,7 @@
 [data-weather="snow"] .weather-precipitation {
   display: block;
   position: absolute;
-  inset: -100%;
+  inset: -95px -70px;
   opacity: 0.4;
   background: radial-gradient(circle, #eef5fb 1px, transparent 2px) 0 0 / 70px 95px;
   animation: snow-fall 12s linear infinite;

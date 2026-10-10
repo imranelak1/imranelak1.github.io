@@ -18,6 +18,7 @@ import {
   Credit,
   Ion,
   ConstantProperty,
+  FrameRateMonitor,
 } from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import { places, findPlace } from "./places";
@@ -31,6 +32,7 @@ type Props = {
   cloud: number;
   onSelect: (id: string) => void;
   onStatus: (status: string) => void;
+  onPerformanceLimited: () => void;
   command: { type: "in" | "out" | "reset"; tick: number };
 };
 
@@ -42,14 +44,14 @@ export default function Globe(props: Props) {
   const [ready, setReady] = useState(false);
   const initialFlight = useRef(false);
   const syncOrbit = useRef(() => {});
+  const syncQuality = useRef(() => {});
   useEffect(() => syncOrbit.current(), [props.paused, props.exploring, ready]);
   useEffect(() => {
     if (!host.current) return;
     const container = host.current;
     let disposed = false,
       contextFailed = false,
-      frame = 0,
-      pending = 0;
+      frame = 0;
     let removeError: (() => void) | undefined;
     let handler: ScreenSpaceEventHandler | undefined;
     let map: Viewer;
@@ -71,8 +73,9 @@ export default function Globe(props: Props) {
         skyAtmosphere: false,
         requestRenderMode: true,
         maximumRenderTimeChange: Infinity,
+        msaaSamples: 1,
         contextOptions: {
-          webgl: { alpha: false, preserveDrawingBuffer: false },
+          webgl: { alpha: false, antialias: false, preserveDrawingBuffer: false, powerPreference: "low-power" },
         },
       });
     } catch {
@@ -83,12 +86,21 @@ export default function Globe(props: Props) {
       return;
     }
     viewer.current = map;
+    const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory;
+    let lowPower = (navigator.hardwareConcurrency > 0 && navigator.hardwareConcurrency <= 4) || (memory !== undefined && memory <= 4);
     map.useBrowserRecommendedResolution = true;
-    map.resolutionScale = matchMedia('(pointer: coarse)').matches ? .8 : 1.25;
-    map.targetFrameRate = matchMedia('(pointer: coarse)').matches ? 24 : 30;
+    syncQuality.current = () => {
+      const exploring = latest.current.exploring;
+      // The shaded background needs fewer pixels than the interactive map.
+      map.resolutionScale = exploring ? (lowPower ? .8 : 1) : (lowPower ? .55 : .75);
+      map.targetFrameRate = exploring ? (lowPower ? 24 : 30) : (lowPower ? 15 : 20);
+      map.scene.globe.maximumScreenSpaceError = exploring ? 3 : 5;
+      container.dataset.quality = lowPower ? "low" : "standard";
+      map.scene.requestRender();
+    };
+    syncQuality.current();
     map.scene.backgroundColor = Color.fromCssColorString("#0a0a0a");
     map.scene.globe.baseColor = Color.fromCssColorString("#242424");
-    map.scene.globe.maximumScreenSpaceError = 3;
     map.scene.globe.enableLighting = false;
     map.scene.screenSpaceCameraController.minimumZoomDistance = 180;
     map.scene.screenSpaceCameraController.maximumZoomDistance = 24000000;
@@ -199,13 +211,32 @@ export default function Globe(props: Props) {
       if (!document.hidden) map.scene.requestRender();
     };
     document.addEventListener("visibilitychange", onVisibility);
+    // Sample actual scene updates, with a warmup and hidden-tab handling.
+    // A slow machine gets a smaller buffer; ambient motion pauses once, and
+    // the visitor can resume it with the existing Motion control.
+    const monitor = new FrameRateMonitor({
+      scene: map.scene,
+      samplingWindow: 3,
+      quietPeriod: 3,
+      warmupPeriod: 5,
+      minimumFrameRateDuringWarmup: 6,
+      minimumFrameRateAfterWarmup: 12,
+    });
+    let motionAdapted = false, performanceStruggling = false;
+    monitor.lowFrameRate.addEventListener(() => {
+      lowPower = true;
+      performanceStruggling = true;
+      syncQuality.current();
+      syncOrbit.current();
+    });
+    monitor.nominalFrameRate.addEventListener(() => { performanceStruggling = false; });
     let last = performance.now();
     const canOrbit = () => !contextFailed && !document.hidden && !latest.current.exploring && !latest.current.paused;
     const orbit = (now: number) => {
       frame = 0;
       if (!canOrbit()) return;
-      frame = requestAnimationFrame(orbit);
-      const dt = Math.min((now - last) / 1000, 0.05);
+      frame = window.setTimeout(() => orbit(performance.now()), lowPower ? 100 : 1000 / 15);
+      const dt = Math.min((now - last) / 1000, 0.2);
       last = now;
       if (
         contextFailed ||
@@ -215,13 +246,11 @@ export default function Globe(props: Props) {
         !initialFlight.current
       )
         return;
-      if (now - pending < 50) return;
-      pending = now;
       const target = findPlace(latest.current.placeId);
       map.camera.lookAt(
         Cartesian3.fromDegrees(target.longitude, target.latitude),
         new HeadingPitchRange(
-          map.camera.heading + dt * 0.025,
+          map.camera.heading + dt * 0.006,
           CesiumMath.toRadians(-58),
           target.range,
         ),
@@ -230,17 +259,26 @@ export default function Globe(props: Props) {
       map.scene.requestRender();
     };
     syncOrbit.current = () => {
-      cancelAnimationFrame(frame); frame = 0;
+      clearTimeout(frame); frame = 0;
+      // A slowdown first detected while exploring still applies on return.
+      if (performanceStruggling && !motionAdapted && canOrbit()) {
+        motionAdapted = true;
+        latest.current.onPerformanceLimited();
+        container.dataset.orbiting = "false";
+        return;
+      }
       container.dataset.orbiting = String(canOrbit());
       last = performance.now();
-      if (canOrbit()) frame = requestAnimationFrame(orbit);
+      if (canOrbit()) frame = window.setTimeout(() => orbit(performance.now()), 1000 / 15);
     };
     syncOrbit.current();
     return () => {
       disposed = true;
       clearTimeout(timeout);
-      cancelAnimationFrame(frame);
+      clearTimeout(frame);
       syncOrbit.current = () => {};
+      syncQuality.current = () => {};
+      monitor.destroy();
       removeError?.();
       handler?.destroy();
       document.removeEventListener("visibilitychange", onVisibility);
@@ -284,9 +322,7 @@ export default function Globe(props: Props) {
     const map = viewer.current;
     if (!map) return;
     map.scene.screenSpaceCameraController.enableInputs = props.exploring;
-    const coarse = matchMedia('(pointer: coarse)').matches;
-    map.resolutionScale = coarse ? (props.exploring ? 1.25 : .8) : 1.25;
-    map.targetFrameRate = coarse && !props.exploring ? 24 : 30;
+    syncQuality.current();
     map.entities.values.forEach((entity) => {
       if (entity.label)
         entity.label.show = new ConstantProperty(props.exploring);

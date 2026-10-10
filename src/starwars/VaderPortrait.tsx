@@ -33,8 +33,9 @@ export default function VaderPortrait({ paused, onSecret }: { paused: boolean; o
     let renderer: THREE.WebGLRenderer;
     try { renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'low-power' }); }
     catch { element.dataset.ready = 'failed'; return; }
-    const coarsePointer = matchMedia('(pointer: coarse)').matches;
-    renderer.setPixelRatio(Math.min(devicePixelRatio, coarsePointer ? 1.5 : 2));
+    const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory;
+    const lowPower = (navigator.hardwareConcurrency > 0 && navigator.hardwareConcurrency <= 4) || (memory !== undefined && memory <= 4);
+    renderer.setPixelRatio(Math.min(devicePixelRatio, lowPower ? 1 : 1.5));
     renderer.setClearColor(0x000000, 0);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = .9;
@@ -52,7 +53,7 @@ export default function VaderPortrait({ paused, onSecret }: { paused: boolean; o
     const rim = new THREE.DirectionalLight(0xff2946, 4); rim.position.set(3, 1, -2);
     scene.add(key, rim, new THREE.HemisphereLight(0xdde7ff, 0x090b15, .8));
     let model: THREE.Group | undefined;
-    let disposed = false, failed = false, visible = false, frame = 0, last = 0, elapsed = 0;
+    let disposed = false, failed = false, visible = false, frame = 0, reframeFrame = 0, last = 0, elapsed = 0;
     const finePointer = matchMedia('(any-hover: hover) and (any-pointer: fine)');
     let pointerX = 0, pointerY = 0, pointerActive = false, clientX = 0, clientY = 0, centerX = 0, centerY = 0;
     const render = () => {
@@ -66,7 +67,7 @@ export default function VaderPortrait({ paused, onSecret }: { paused: boolean; o
     const tick = (now: number) => {
       frame = 0;
       if (!model || disposed || failed || !visible || document.hidden || state.current.paused) return;
-      if (coarsePointer && last && now - last < 1000 / 30) { frame = requestAnimationFrame(tick); return; }
+      if (last && now - last < 1000 / 30) { frame = requestAnimationFrame(tick); return; }
       const dt = last ? Math.min((now - last) / 1000, .05) : 0;
       last = now; elapsed += dt;
       const angle = pointerActive ? pointerX : Math.sin(elapsed * .3) * .06;
@@ -90,17 +91,25 @@ export default function VaderPortrait({ paused, onSecret }: { paused: boolean; o
       pointerY = pointerActive ? THREE.MathUtils.clamp(Math.atan2(clientY - centerY, depth), -.32, .32) : 0;
       element.dataset.tracking = pointerActive ? 'pointer' : 'idle';
     };
-    const reframe = () => {
-      const rect = element.getBoundingClientRect();
+    const reframe = (rect: DOMRect) => {
       centerX = rect.left + rect.width / 2; centerY = rect.top + rect.height / 2;
       aim();
     };
+    const scheduleReframe = () => {
+      if (reframeFrame) return;
+      reframeFrame = requestAnimationFrame(() => {
+        reframeFrame = 0;
+        if (!disposed && !failed) reframe(element.getBoundingClientRect());
+      });
+    };
     const resize = () => {
-      const { width, height } = element.getBoundingClientRect();
+      const rect = element.getBoundingClientRect();
+      const { width, height } = rect;
       if (!width || !height) return;
+      cancelAnimationFrame(reframeFrame); reframeFrame = 0;
       renderer.setSize(width, height, false);
       camera.aspect = width / height; camera.updateProjectionMatrix(); render();
-      reframe();
+      reframe(rect);
     };
     const move = (event: PointerEvent) => {
       if (event.pointerType !== 'mouse' || !finePointer.matches) { leave(); return; }
@@ -113,7 +122,7 @@ export default function VaderPortrait({ paused, onSecret }: { paused: boolean; o
     const observer = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; sync(); }); observer.observe(element);
     const sizing = new ResizeObserver(resize); sizing.observe(element);
     window.addEventListener('pointermove', move, { passive: true }); window.addEventListener('pointerout', out);
-    window.addEventListener('scroll', reframe, { passive: true }); window.addEventListener('resize', reframe);
+    window.addEventListener('scroll', scheduleReframe, { passive: true }); window.addEventListener('resize', scheduleReframe);
     window.addEventListener('blur', leave); window.addEventListener('keydown', leave); window.addEventListener('pointercancel', leave);
     finePointer.addEventListener('change', leave); document.addEventListener('visibilitychange', visibility);
     renderer.domElement.addEventListener('webglcontextlost', lost);
@@ -131,9 +140,9 @@ export default function VaderPortrait({ paused, onSecret }: { paused: boolean; o
     resize();
     return () => {
       disposed = true; state.current.sync = () => {};
-      cancelAnimationFrame(frame); observer.disconnect(); sizing.disconnect();
+      cancelAnimationFrame(frame); cancelAnimationFrame(reframeFrame); observer.disconnect(); sizing.disconnect();
       window.removeEventListener('pointermove', move); window.removeEventListener('pointerout', out);
-      window.removeEventListener('scroll', reframe); window.removeEventListener('resize', reframe);
+      window.removeEventListener('scroll', scheduleReframe); window.removeEventListener('resize', scheduleReframe);
       window.removeEventListener('blur', leave); window.removeEventListener('keydown', leave); window.removeEventListener('pointercancel', leave);
       finePointer.removeEventListener('change', leave); document.removeEventListener('visibilitychange', visibility);
       renderer.domElement.removeEventListener('webglcontextlost', lost);

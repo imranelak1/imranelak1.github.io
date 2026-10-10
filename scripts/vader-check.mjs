@@ -42,7 +42,9 @@ try {
    await page.mouse.down();assert.equal(await cursor.getAttribute('data-pressed'),'true');
    assert.notEqual(await cursor.locator('.imperial-cursor__brackets').evaluate(e=>getComputedStyle(e).transform),hoverTransform);
    await page.mouse.move(305,220);await page.mouse.up();assert.equal(await cursor.getAttribute('data-interactive'),'false');
-   await page.locator('.cv-pending').hover();assert.equal(await cursor.getAttribute('data-interactive'),'false','Pending CV is not an action');
+   const cv=page.getByRole('link',{name:'Download CV (PDF)',exact:true});
+   assert.match(await cv.getAttribute('href'),/\/cv\.pdf$/);assert.equal(await cv.getAttribute('download'),'Imrane_Lakniti_CV_EN.pdf');
+   await cv.hover();assert.equal(await cursor.getAttribute('data-interactive'),'true','Downloadable CV shows target lock');
    await page.locator('.sidebar nav a').first().hover();assert.equal(await cursor.getAttribute('data-interactive'),'true');
    await page.locator('.project > summary').first().hover();assert.equal(await cursor.getAttribute('data-interactive'),'true');
    await page.mouse.down();await page.mouse.up();assert.equal(await page.locator('.project').first().getAttribute('open'),'');

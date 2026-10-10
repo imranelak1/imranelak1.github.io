@@ -34,7 +34,7 @@ export const places: Place[] = [
     range: 1100,
     address: "5 Lot Bouzgaren, Route de Safi, Marrakech",
     description:
-      "One of the two EMSI Marrakech campuses where I study in my final year of engineering.",
+      "One of the two EMSI Marrakech campuses where I study computer science and networks, with graduation expected in 2027.",
     precision: "campus",
     source: "https://emsi.ma/campus/",
   },

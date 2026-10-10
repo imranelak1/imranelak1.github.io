@@ -22,11 +22,13 @@ Use Node.js 22 or newer. `npm run build` checks TypeScript and generates `dist/`
 - `src/styles.css`, `src/layout.css`, `src/map.css`: layout and map styling.
 - `src/starwars/`: Vader portrait, typography and interactive cursor.
 
-Add `public/cv.pdf` to enable the CV download. Location buttons move the background map and its weather without hiding the portfolio. The selected button is underlined; Explore the map opens the full controls at the current location. Both EMSI campuses use sourced coordinates. Sensthings locations are labeled as approximate areas until exact office pins are available.
+`public/cv.pdf` contains the English CV and is available from the profile’s CV download link. Replace that file to publish a newer version, and keep the biography, projects, experience, education and skills in `src/App.tsx` in sync. Location buttons move the background map and its weather without hiding the portfolio. The selected button is underlined; Explore the map opens the full controls at the current location. Both EMSI campuses use sourced coordinates. Sensthings locations are labeled as approximate areas until exact office pins are available.
 
 The cursor changes into a red targeting lock over links, buttons and project disclosures, then compresses on press. Keyboard, touch, editable fields and map exploration retain native behavior. Vader follows the pointer with eased, bounded head turns. Motion controls and reduced-motion preferences pause the portrait and map; hidden and offscreen rendering stops automatically.
 
-On phones, the profile places Vader beside the contact links, text is larger, and primary touch controls have at least 44px tap targets. Map tools adapt to portrait and landscape, with a horizontally scrolling location list and scrollable details. Safe-area spacing accounts for notches and home indicators. Ambient motion starts on for desktop and touch devices, except when the visitor requests reduced motion. The Motion control can pause it. The portrait renders at a lower pixel density and at most 30fps on touch devices. Cesium loads after the profile's first paint, uses sharper imagery while exploring, and stops the orbit loop while paused.
+On phones, the profile places Vader beside the contact links, text is larger, and primary touch controls have at least 44px tap targets. Map tools adapt to portrait and landscape, with a horizontally scrolling location list and scrollable details. Safe-area spacing accounts for notches and home indicators. Ambient motion starts on for desktop and touch devices, except when the visitor requests reduced motion. The Motion control can pause it.
+
+The portrait renders at most 30fps on every device, with pixel density capped at 1.5 (1 on devices reporting four or fewer CPU threads or 4GB of memory). Cesium loads after the profile's first paint on all devices. Its shaded background uses a 0.75 resolution scale, increasing to 1 when exploring; lower-power devices use 0.55 and 0.8 respectively. Background orbit updates are limited to 15fps, or 10fps on lower-power devices. Map multisample antialiasing is disabled, and weather layers are bounded to their animation travel. Sustained low frame rates reduce map quality and pause ambient motion once per visit; the Motion control can resume it. Hidden tabs and paused motion stop the orbit loop.
 
 ## Deploy
 
@@ -44,9 +46,10 @@ npm run test:3d
 npm run test:mobile
 npm run test:secret
 npm run test:weather
+npm run test:performance
 ```
 
-Set `PORTFOLIO_TEST_URL` to check a production preview or the published site. Checks cover responsive layout, map destinations, keyboard navigation, project disclosures, cursor feedback, portrait tracking, motion preferences and failure states. Screenshots are written to `.impeccable/review/`.
+Set `PORTFOLIO_TEST_URL` to check a production preview or the published site. Checks cover responsive layout, map destinations, keyboard navigation, project disclosures, cursor feedback, portrait tracking, motion preferences, rendering budgets and failure states. Screenshots are written to `.impeccable/review/`.
 
 The Easter egg payload is encrypted; its code and message are absent from the current source and public tests. A short numeric code provides casual hiding only, not secure access control, and older commits may contain previous values. Checks generate independent test data. To change the payload, keep a JSON file with `code` and `message` in the ignored `.impeccable/` folder and run `node scripts/seal-secret.mjs <private-file>`. Never commit that input file. Set `PORTFOLIO_SECRET_FILE` to its local path when checking the real published payload.
 
