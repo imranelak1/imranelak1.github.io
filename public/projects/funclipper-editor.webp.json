@@ -1,0 +1,10 @@
+{
+  "prompt": "AUTHENTIC sourced screenshot, not an AI-generated image: FunClipper, docs/screenshots/editor.png. Actual running FunClipper editor displaying generated color-bar test footage. The footage is a test fixture; the interface is an authentic application capture. This full-size asset preserves the screenshot composition and interface without cropping or UI edits; only proportional resizing and WebP encoding were applied.",
+  "project": "FunClipper",
+  "source": "docs/screenshots/editor.png",
+  "provenance": "Actual running FunClipper editor displaying generated color-bar test footage. The footage is a test fixture; the interface is an authentic application capture.",
+  "aiGenerated": false,
+  "operation": "Proportional resize as needed; WebP encoding at quality 90; no cropping or UI alteration.",
+  "width": 744,
+  "height": 651
+}

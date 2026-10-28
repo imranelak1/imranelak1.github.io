@@ -15,20 +15,31 @@ Use Node.js 22 or newer. `npm run build` checks TypeScript and generates `dist/`
 
 ## Edit
 
-- `src/App.tsx`: biography, projects, experience and contact links.
+- `src/App.tsx`: biography, experience and contact links.
+- `src/projects.ts`: project descriptions, technology stacks, public repository links and screenshot metadata.
+- `src/ProjectSection.tsx` / `src/projects.css`: project disclosures, responsive screenshot galleries and accessible image viewer.
+- `public/projects/`: authentic project screenshots, optimized WebP previews and their provenance.
 - `src/places.ts`: map coordinates, sources and location precision.
 - `src/Globe.tsx` / `src/MapExperience.tsx`: satellite map and exploration controls.
 - `src/useMapWeather.ts`: Open-Meteo weather, daylight and offline fallback.
 - `src/styles.css`, `src/layout.css`, `src/map.css`: layout and map styling.
 - `src/starwars/`: Vader portrait, typography and interactive cursor.
 
-`public/cv.pdf` contains the English CV and is available from the profile’s CV download link. Replace that file to publish a newer version, and keep the biography, projects, experience, education and skills in `src/App.tsx` in sync. Location buttons move the background map and its weather without hiding the portfolio. The selected button is underlined; Explore the map opens the full controls at the current location. Both EMSI campuses use sourced coordinates. Sensthings locations are labeled as approximate areas until exact office pins are available.
+`public/cv.pdf` contains the English CV and is available from the profile’s CV download link. Replace that file to publish a newer version, and keep the biography, experience, education and skills in `src/App.tsx` and projects in `src/projects.ts` in sync. Location buttons move the background map and its weather without hiding the portfolio. The selected button is underlined; Explore the map opens the full controls at the current location. Both EMSI campuses use sourced coordinates. Sensthings locations are labeled as approximate areas until exact office pins are available.
 
 The cursor changes into a red targeting lock over links, buttons and project disclosures, then compresses on press. Keyboard, touch, editable fields and map exploration retain native behavior. Vader follows the pointer with eased, bounded head turns. Motion controls and reduced-motion preferences pause the portrait and map; hidden and offscreen rendering stops automatically.
 
 On phones, the profile places Vader beside the contact links, text is larger, and primary touch controls have at least 44px tap targets. Map tools adapt to portrait and landscape, with a horizontally scrolling location list and scrollable details. Safe-area spacing accounts for notches and home indicators. Ambient motion starts on for desktop and touch devices, except when the visitor requests reduced motion. The Motion control can pause it.
 
 The portrait renders at most 30fps on every device, with pixel density capped at 1.5 (1 on devices reporting four or fewer CPU threads or 4GB of memory). Cesium loads after the profile's first paint on all devices. Its shaded background uses a 0.75 resolution scale, increasing to 1 when exploring; lower-power devices use 0.55 and 0.8 respectively. Background orbit updates are limited to 15fps, or 10fps on lower-power devices. Map multisample antialiasing is disabled, and weather layers are bounded to their animation travel. Sustained low frame rates reduce map quality and pause ambient motion once per visit; the Motion control can resume it. Hidden tabs and paused motion stop the orbit loop.
+
+## Project screenshots
+
+The project section includes MonsterGarage, GitSomething, Forge and FunClipper screenshots. Switch views below each image, or open the full-size viewer; arrow keys change screenshots and Escape closes it and returns focus. Background animation pauses while a viewer is open.
+
+Screenshots use empty or demonstration workspaces and controlled test footage. They are real application captures, not mockups or claims about production performance. Originals and 720px previews are served locally as WebP, with lazy loading and explicit dimensions. See [asset provenance](public/projects/CREDITS.md).
+
+Run `npm run test:projects` against the local development server, or set `PORTFOLIO_TEST_URL` to a different URL. It checks desktop and mobile galleries, keyboard navigation, focus restoration, image loading, narrow layouts and recovery from a missing screenshot without WebGL.
 
 ## Deploy
 
@@ -42,6 +53,7 @@ With the dev server running and Microsoft Edge installed:
 
 ```sh
 npm run test:browser
+npm run test:projects
 npm run test:3d
 npm run test:mobile
 npm run test:secret

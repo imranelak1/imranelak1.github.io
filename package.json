@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "test:browser": "node scripts/browser-check.mjs",
+    "test:projects": "node scripts/project-check.mjs",
     "test:3d": "node scripts/vader-check.mjs",
     "test:mobile": "node scripts/mobile-check.mjs",
     "test:secret": "node scripts/secret-check.mjs",

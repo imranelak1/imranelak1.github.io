@@ -1,0 +1,93 @@
+[
+  {
+    "stem": "git-working-tree",
+    "project": "GitSomething",
+    "width": 1440,
+    "height": 960,
+    "previewWidth": 720,
+    "previewHeight": 480,
+    "source": "artifacts/github-dark/desktop-working-directory.png",
+    "provenance": "Actual running GitSomething interface in its interactive demo workspace. The orbit repository and people shown are demo data.",
+    "file": "git-working-tree.webp",
+    "previewFile": "git-working-tree-720.webp",
+    "alt": "GitSomething working directory with changed files, code diff, staging controls and glass-box Git activity."
+  },
+  {
+    "stem": "git-history",
+    "project": "GitSomething",
+    "width": 1440,
+    "height": 960,
+    "previewWidth": 720,
+    "previewHeight": 480,
+    "source": "artifacts/github-dark/desktop-history.png",
+    "provenance": "Actual running GitSomething interface in its interactive demo workspace. The orbit repository and people shown are demo data.",
+    "file": "git-history.webp",
+    "previewFile": "git-history-720.webp",
+    "alt": "GitSomething commit history with a branch graph, commit list and Git activity panel."
+  },
+  {
+    "stem": "funclipper-recorder",
+    "project": "FunClipper",
+    "width": 834,
+    "height": 621,
+    "previewWidth": 720,
+    "previewHeight": 536,
+    "source": "docs/screenshots/desktop.png",
+    "provenance": "Actual running FunClipper desktop application with controlled test-game entries and generated test footage. Vitals are sampled test-machine readings, not performance benchmarks.",
+    "file": "funclipper-recorder.webp",
+    "previewFile": "funclipper-recorder-720.webp",
+    "alt": "FunClipper desktop recorder with capture profile, PC vitals and recent test clips."
+  },
+  {
+    "stem": "funclipper-editor",
+    "project": "FunClipper",
+    "width": 744,
+    "height": 651,
+    "previewWidth": 720,
+    "previewHeight": 630,
+    "source": "docs/screenshots/editor.png",
+    "provenance": "Actual running FunClipper editor displaying generated color-bar test footage. The footage is a test fixture; the interface is an authentic application capture.",
+    "file": "funclipper-editor.webp",
+    "previewFile": "funclipper-editor-720.webp",
+    "alt": "FunClipper clip editor with test footage, trim handles, mute and sharing actions."
+  },
+  {
+    "stem": "monstergarage-dashboard",
+    "project": "MonsterGarage",
+    "width": 1584,
+    "height": 805,
+    "previewWidth": 720,
+    "previewHeight": 366,
+    "source": "MonsterGarage screenshot collection / dashboard.png",
+    "provenance": "Authentic MonsterGarage application screenshot supplied in the project screenshot collection. The workshop is in an empty state with zero active records and no customer records visible.",
+    "file": "monstergarage-dashboard.webp",
+    "previewFile": "monstergarage-dashboard-720.webp",
+    "alt": "MonsterGarage workshop dashboard with new-job actions, navigation and empty workshop counters."
+  },
+  {
+    "stem": "forge-tests",
+    "project": "Forge",
+    "width": 1440,
+    "height": 1000,
+    "previewWidth": 720,
+    "previewHeight": 500,
+    "source": ".artifacts/phase6/desktop-tests.png",
+    "provenance": "Actual Forge interface captured during phase 6 verification. The Demo One organization contains generated demonstration history, as identified in the interface; metrics describe those demo records.",
+    "file": "forge-tests.webp",
+    "previewFile": "forge-tests-720.webp",
+    "alt": "Forge test intelligence with report coverage, filters and test outcomes for Demo One."
+  },
+  {
+    "stem": "forge-overview",
+    "project": "Forge",
+    "width": 1440,
+    "height": 1000,
+    "previewWidth": 720,
+    "previewHeight": 500,
+    "source": ".impeccable/review/phase4-desktop-overview.png",
+    "provenance": "Actual Forge interface captured during phase 4 review. The Demo One organization contains generated demonstration history, as identified in the interface; metrics describe those demo records.",
+    "file": "forge-overview.webp",
+    "previewFile": "forge-overview-720.webp",
+    "alt": "Forge engineering overview with pull-request cycle, review and approval measurements for Demo One."
+  }
+]

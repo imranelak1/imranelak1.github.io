@@ -1,0 +1,10 @@
+{
+  "prompt": "AUTHENTIC sourced screenshot, not an AI-generated image: FunClipper, docs/screenshots/desktop.png. Actual running FunClipper desktop application with controlled test-game entries and generated test footage. Vitals are sampled test-machine readings, not performance benchmarks. This 720-pixel-wide preview asset preserves the screenshot composition and interface without cropping or UI edits; only proportional resizing and WebP encoding were applied.",
+  "project": "FunClipper",
+  "source": "docs/screenshots/desktop.png",
+  "provenance": "Actual running FunClipper desktop application with controlled test-game entries and generated test footage. Vitals are sampled test-machine readings, not performance benchmarks.",
+  "aiGenerated": false,
+  "operation": "Proportional resize as needed; WebP encoding at quality 90; no cropping or UI alteration.",
+  "width": 720,
+  "height": 536
+}

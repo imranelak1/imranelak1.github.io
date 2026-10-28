@@ -1,0 +1,10 @@
+{
+  "prompt": "AUTHENTIC sourced screenshot, not an AI-generated image: Forge, .impeccable/review/phase4-desktop-overview.png. Actual Forge interface captured during phase 4 review. The Demo One organization contains generated demonstration history, as identified in the interface; metrics describe those demo records. This full-size asset preserves the screenshot composition and interface without cropping or UI edits; only proportional resizing and WebP encoding were applied.",
+  "project": "Forge",
+  "source": ".impeccable/review/phase4-desktop-overview.png",
+  "provenance": "Actual Forge interface captured during phase 4 review. The Demo One organization contains generated demonstration history, as identified in the interface; metrics describe those demo records.",
+  "aiGenerated": false,
+  "operation": "Proportional resize as needed; WebP encoding at quality 90; no cropping or UI alteration.",
+  "width": 1440,
+  "height": 1000
+}

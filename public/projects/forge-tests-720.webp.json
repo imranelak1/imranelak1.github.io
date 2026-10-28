@@ -1,0 +1,10 @@
+{
+  "prompt": "AUTHENTIC sourced screenshot, not an AI-generated image: Forge, .artifacts/phase6/desktop-tests.png. Actual Forge interface captured during phase 6 verification. The Demo One organization contains generated demonstration history, as identified in the interface; metrics describe those demo records. This 720-pixel-wide preview asset preserves the screenshot composition and interface without cropping or UI edits; only proportional resizing and WebP encoding were applied.",
+  "project": "Forge",
+  "source": ".artifacts/phase6/desktop-tests.png",
+  "provenance": "Actual Forge interface captured during phase 6 verification. The Demo One organization contains generated demonstration history, as identified in the interface; metrics describe those demo records.",
+  "aiGenerated": false,
+  "operation": "Proportional resize as needed; WebP encoding at quality 90; no cropping or UI alteration.",
+  "width": 720,
+  "height": 500
+}

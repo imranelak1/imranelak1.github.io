@@ -3,45 +3,18 @@ import { ArrowUpRight, Github, Linkedin, Mail, FileText, Pause, Play, Copy, Chec
 import MapExperience from "./MapExperience";
 import ImperialCursor from './starwars/ImperialCursor';
 import SecretMessage, { type SecretMode } from './SecretMessage';
+import ProjectSection from './ProjectSection';
 const VaderPortrait = lazy(() => import('./starwars/VaderPortrait'));
 const email = "imranelakniti9@gmail.com";
 const github = "https://github.com/imranelak1";
 const linkedin = "https://www.linkedin.com/in/imrane-lakniti/";
 const sections = ["About", "Projects", "Experience", "Education", "Stack", "Interests"];
-const projects = [
-  {
-    name: "MonsterGarage", category: "FREELANCE", period: "April – June 2026",
-    summary: "A garage-management application for a Marrakech business.",
-    description: "Built a local web application for Monster Garage / WIDINE MOTORS SERVICES, covering customers, vehicles, repair jobs, quotations, invoices, PDF exports, and staff workflows.",
-    details: ["Customer, vehicle, and repair records", "Quotes, invoices, and PDF exports", "Python, Flask, and a browser-based interface"],
-    place: "monstergarage", privateRepo: true,
-  },
-  {
-    name: "Neurodive", category: "FREELANCE",
-    summary: "Full-stack development and technical leadership for a discovery and membership platform.",
-    description: "Developed a platform for resources, professional discovery, memberships, and administration, pairing a React and TypeScript interface with a Python/FastAPI backend. My responsibilities also cover the platform’s IT and deployment.",
-    details: ["Full-stack developer & technical lead", "Resource discovery, memberships, and administration", "React, TypeScript, FastAPI, and SQLAlchemy"],
-    privateRepo: true,
-  },
-  {
-    name: "Forge", category: "IN DEVELOPMENT",
-    summary: "Engineering intelligence across pull requests, reviews, CI, and deployments.",
-    description: "Designed and built a multi-tenant GitHub analytics platform with signed webhooks, resumable workers, and PostgreSQL row-level security. Forge is in development.",
-    details: ["Secure JUnit ingestion and test execution histories", "Pass-rate metrics and potential-flakiness analysis", "Next.js, TypeScript, Python, FastAPI, PostgreSQL, and Docker", "Automated API and UI tests with pytest, Vitest, and Playwright"],
-  },
-  {
-    name: "codeGraph", category: "TYPESCRIPT",
-    summary: "Understand what a code change puts at risk.",
-    description: "A dependency analyzer for JavaScript and TypeScript. Trace the impact of a change, inspect test coverage, and see which imports could not be resolved.",
-    details: ["Dependency maps and change impact", "Coverage and unresolved imports", "Web interface, CLI, and GitHub Action"],
-    privateRepo: true,
-  },
-];
 export default function App() {
   const [active, setActive] = useState("about");
   const mapTrigger = useRef<HTMLElement | null>(null);
   const [exploring, setExploring] = useState(false);
   const [secret, setSecret] = useState<SecretMode>('closed');
+  const [projectPreviewOpen, setProjectPreviewOpen] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState("marrakech");
   const showPlace = useCallback((id: string) => { setSelectedPlace(id); }, []);
   const exploreMap = useCallback((open: boolean) => { if (open) mapTrigger.current = document.activeElement as HTMLElement; setExploring(open); }, []);
@@ -65,9 +38,9 @@ export default function App() {
     catch { setCopyError(true); }
   }
   return <div>
-    <ImperialCursor disabled={exploring || secret !== 'closed'} />
-    <SecretMessage mode={secret} onChange={setSecret} disabled={exploring} />
-    <MapExperience selected={selectedPlace} exploring={exploring} paused={paused || secret !== 'closed'} onExplore={exploreMap} returnFocus={mapTrigger.current} onSelect={setSelectedPlace} onPause={() => setPaused(!paused)} onPerformanceLimited={pauseForPerformance} />
+    <ImperialCursor disabled={exploring || secret !== 'closed' || projectPreviewOpen} />
+    <SecretMessage mode={secret} onChange={setSecret} disabled={exploring || projectPreviewOpen} />
+    <MapExperience selected={selectedPlace} exploring={exploring} paused={paused || secret !== 'closed' || projectPreviewOpen} onExplore={exploreMap} returnFocus={mapTrigger.current} onSelect={setSelectedPlace} onPause={() => setPaused(!paused)} onPerformanceLimited={pauseForPerformance} />
     <a className="skip-link" href="#projects">Skip to projects</a>
     <div className={`portfolio ${exploring ? "map-is-open" : ""}`} inert={exploring}>
       <header className="sidebar">
@@ -82,7 +55,7 @@ export default function App() {
           <div className="socials"><a href={github} target="_blank" rel="noreferrer"><Github />GitHub <ArrowUpRight /></a><a href={linkedin} target="_blank" rel="noreferrer"><Linkedin />LinkedIn <ArrowUpRight /></a><span>Marrakech, Morocco</span></div>
           <button className="motion-control" onClick={() => setPaused(!paused)} aria-label={paused ? "Play background animation" : "Pause background animation"}>{paused ? <Play /> : <Pause />}{paused ? "Motion off" : "Motion on"}</button>
         </div>
-        <Suspense fallback={<div className="vader-portrait" aria-hidden="true" />}><VaderPortrait paused={paused || exploring || secret !== 'closed'} onSecret={() => setSecret('code')} /></Suspense>
+        <Suspense fallback={<div className="vader-portrait" aria-hidden="true" />}><VaderPortrait paused={paused || exploring || secret !== 'closed' || projectPreviewOpen} onSecret={() => setSecret('code')} /></Suspense>
       </header>
       <main>
         <section id="about" className="intro" aria-label="About">
@@ -90,7 +63,7 @@ export default function App() {
           <p>My freelance work includes <strong>MonsterGarage</strong> and <strong>Neurodive</strong>. At Neurodive, my role includes full-stack development, technical leadership, IT, and deployment. I’m also developing <strong>Forge</strong>, an engineering intelligence platform for GitHub activity and test results.</p>
           <p className="muted">Two internships at Sensthings brought hands-on experience with full-stack dashboards, APIs, phone sensors, BLE presence detection, and on-device machine learning. Most of my code lives in private repositories.</p>
         </section>
-        <section id="projects" aria-labelledby="projects-title"><h2 id="projects-title" className="section-label">Projects</h2><div className="project-list">{projects.map(project => <details className="project" key={project.name}><summary><span className="entry-meta">{project.category}</span><span className="project-summary"><span className="project-name">{project.name}<span className="disclosure" aria-hidden="true">▸</span></span><span className="project-description">{project.summary}</span></span></summary><div className="project-details">{project.period && <p className="entry-meta">{project.period}</p>}<p>{project.description}</p><ul>{project.details.map(detail => <li key={detail}>{detail}</li>)}</ul><div className="project-links">{project.place && <button aria-pressed={selectedPlace === project.place} onClick={() => showPlace(project.place)}><MapPin />View location</button>}<a href={`mailto:${email}?subject=${encodeURIComponent(`Tell me about ${project.name}`)}`}>Ask about this project <ArrowUpRight /></a>{project.privateRepo && <span>Private repository</span>}</div></div></details>)}</div></section>
+        <ProjectSection email={email} selectedPlace={selectedPlace} onViewLocation={showPlace} onPreviewChange={setProjectPreviewOpen} />
         <section id="experience" aria-labelledby="experience-title"><h2 id="experience-title" className="section-label">Experience</h2>
           <div className="entry"><span className="entry-meta">SUMMER 2026</span><div><h3>Sensthings</h3><p className="entry-subtitle">Mobile development &amp; machine learning internship</p><p>Built a Flutter/Dart module for T3-Shield to detect motion, estimate room presence with BLE beacons, and relate in-app activity to movement. Sensor processing and TensorFlow Lite inference run on the phone, with a rule-based fallback.</p><p>Created a Python training pipeline and a React/TypeScript dashboard connected through a local HTTP/WebSocket relay. Structured the tracking module for integration into an existing Flutter app.</p></div></div>
           <div className="entry"><span className="entry-meta">SUMMER 2025</span><div><h3>Sensthings</h3><p className="entry-subtitle">Full-stack development internship</p><p>Developed T3-Shield’s React and TypeScript frontend with analytics dashboards, regional maps, filters, and data visualizations.</p><p>Built Python/FastAPI APIs backed by MySQL for collecting and querying analysis data, statistics, regional comparisons, and Excel exports. Implemented session-based authentication, role-based access control, and WebSocket updates for dashboard data.</p></div></div>

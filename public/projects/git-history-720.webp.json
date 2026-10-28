@@ -1,0 +1,10 @@
+{
+  "prompt": "AUTHENTIC sourced screenshot, not an AI-generated image: GitSomething, artifacts/github-dark/desktop-history.png. Actual running GitSomething interface in its interactive demo workspace. The orbit repository and people shown are demo data. This 720-pixel-wide preview asset preserves the screenshot composition and interface without cropping or UI edits; only proportional resizing and WebP encoding were applied.",
+  "project": "GitSomething",
+  "source": "artifacts/github-dark/desktop-history.png",
+  "provenance": "Actual running GitSomething interface in its interactive demo workspace. The orbit repository and people shown are demo data.",
+  "aiGenerated": false,
+  "operation": "Proportional resize as needed; WebP encoding at quality 90; no cropping or UI alteration.",
+  "width": 720,
+  "height": 480
+}
